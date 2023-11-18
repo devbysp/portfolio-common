@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+
+  database:
+    image: mysql:8.2
+    restart: always
+    volumes:
+      - ../portfolio-database:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - '3306'
+
+  adminer:
+    image: adminer
+    restart: always
+    depends_on:
+      - database
+    ports:
+      - '8080'
+
+  backend:
+    image: '${COMPANY}/${COOKBOOK_PROJECT_NAME}-backend:${COOKBOOK_PROJECT_VERSION}'
+    build:
+      context: ../cookbook-app/kcal-app-express
+      args:
+        BASE_PATH: 'kcal-app-backend'
+        PORT: '6001'
+    env_file:
+      - ../cookbook-app/kcal-app-express/.env
+    depends_on:
+      - database
+    ports:
+      - '6001'
+        #
+        #  frontend:
+        #    image: '${COMPANY}/${PROJECT_NAME}-frontend:${VERSION}'
+        #    build:
+        #      context: ../cookbook-app/kcal-app-react
+        #      args:
+        #        BASE_PATH: 'kcal-app'
+        #        BACKEND_BASE_PATH: 'kcal-app-backend'
+        #        BACKEND_PORT: '6001'
+        #    depends_on:
+        #      - backend
+        #    ports:
+        #      - '80'
+
+  nginx:
+    image: nginx:1.25.2-alpine-slim
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - adminer
+    ports:
+      - '80:80'
