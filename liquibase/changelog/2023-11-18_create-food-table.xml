@@ -1,0 +1,47 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+<!-- Creat food table -->
+<changeSet id="1" author="devbysp">
+  <createTable tableName="food">
+    <column name="id" type="INT" autoIncrement="true">
+      <constraints primaryKey="true" nullable="false"/>
+    </column>
+
+    <column name="foodName" type="VARCHAR(255)">
+      <constraints nullable="false"/>
+    </column>
+
+    <column name="kcal" type="INT">
+      <constraints nullable="false"/>
+    </column>
+
+    <column name="fat" type="FLOAT">
+      <constraints nullable="false"/>
+    </column>
+
+    <column name="saturatedFat" type="FLOAT">
+      <constraints nullable="false"/>
+    </column>
+
+    <column name="carbs" type="FLOAT">
+      <constraints nullable="false"/>
+    </column>
+
+    <column name="sugar" type="FLOAT">
+      <constraints nullable="false"/>
+    </column>
+
+    <column name="fiber" type="FLOAT">
+      <constraints nullable="false"/>
+    </column>
+
+    <column name="protein" type="FLOAT">
+      <constraints nullable="false"/>
+    </column>
+  </createTable>
+</changeSet>
+
+</databaseChangeLog>

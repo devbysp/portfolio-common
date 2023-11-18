@@ -15,11 +15,24 @@ services:
     ports:
       - '3306'
 
+  liquibase:
+    build:
+      context: ./liquibase
+      dockerfile: Dockerfile
+      args:
+        MYSQL_CONNECTOR_VERSION: ${MYSQL_CONNECTOR_VERSION}
+    volumes:
+      - ./liquibase/liquibase.properties:/liquibase.properties
+      - ./liquibase/changelog:/liquibase/changelog
+    command: ["/bin/sh", "-c", "/usr/local/bin/wait-for-it.sh database:3306 --timeout=0 -- && liquibase --defaultsFile=/liquibase.properties update"]
+    depends_on:
+      - database
+
   adminer:
     image: adminer
     restart: always
     depends_on:
-      - database
+      - liquibase
     ports:
       - '8080'
 
@@ -33,7 +46,7 @@ services:
     env_file:
       - ../cookbook-app/kcal-app-express/.env
     depends_on:
-      - database
+      - liquibase
     ports:
       - '6001'
         #
